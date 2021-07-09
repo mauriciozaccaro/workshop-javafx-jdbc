@@ -13,4 +13,8 @@ public class DepartmentService {
 	public List<Department> findAll(){
 		return dao.findAll(); 
 	}
+	
+	public Integer lastNumberDepartmentId() {
+		return dao.lastNumber();
+	}
 }

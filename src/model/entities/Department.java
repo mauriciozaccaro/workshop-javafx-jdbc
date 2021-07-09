@@ -13,9 +13,9 @@ public class Department implements Serializable {
 		
 	}
 
-	public Department(int id, String name) {
-		Id = id;
-		Name = name;
+	public Department(int Id, String Name) {
+		this.Id = Id;
+		this.Name = Name;
 	}
 
 	public String getName() {

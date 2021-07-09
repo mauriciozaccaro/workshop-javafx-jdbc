@@ -23,12 +23,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.dao.impl.DepartmentDaoJDBC;
 import model.entities.Department;
 import model.services.DepartmentService;
 
 public class DepartmentListController implements Initializable{
 
 	private DepartmentService depService; // isso cria uma dependência láaaaa da classe de serviço DepartmentService
+	//private DepartmentDaoJDBC departmentDaojdbc = new DepartmentDaoJDBC(null);
 	
 	public void setDepartmentService(DepartmentService depService) {
 		this.depService = depService; // INJEÇÃO de dependência
@@ -51,7 +53,9 @@ public class DepartmentListController implements Initializable{
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
-		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
+		Integer newId = depService.lastNumberDepartmentId();
+		Department obj = new Department(newId, "");
+		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage);
 	}	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
@@ -79,11 +83,15 @@ public class DepartmentListController implements Initializable{
 		tableViewDepartment.setItems(obsList); 
 	}
 	
-	private void createDialogForm(String absoluteName, Stage parantStage) {
+	private void createDialogForm(Department obj, String absoluteName, Stage parantStage) {
 		try {
 			
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
+			
+			DepartmentFormController controller = loader.getController();
+			controller.setDepartment(obj);
+			controller.updateFormData();
 			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter Department Data");

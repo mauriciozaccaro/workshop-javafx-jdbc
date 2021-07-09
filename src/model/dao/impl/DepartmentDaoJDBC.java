@@ -222,5 +222,36 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 		return null;
 	}
 
+	@Override
+	public Integer lastNumber() {
+		
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		Integer lastNumberId = null;
+		
+		try {
+			
+			st = conn.prepareStatement("SELECT * FROM Department dp WHERE dp.Id IN ( "
+									  +"SELECT MAX(Id)FROM Department)");
+			rs = st.executeQuery();
+			
+			if(rs.next()) {
+				Department dep = instanteateDepartment(rs);
+				lastNumberId = dep.getId() + 1;
+				return lastNumberId;
+			}else {
+				throw new DbException("Caiu no Else, do lasNumber()");
+			}
+			
+		}catch(SQLException e) {
+			System.out.println("Erro ao Buscar último Registro: " + e.getMessage());
+		}finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
+		}
+		return null;
+	}
+
 	
 }
