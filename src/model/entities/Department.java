@@ -2,8 +2,8 @@ package model.entities;
 
 import java.io.Serializable;
 
-public class Department implements Serializable{
-	
+public class Department implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	
 	private Integer Id;
@@ -13,17 +13,9 @@ public class Department implements Serializable{
 		
 	}
 
-	public Department(Integer id, String name) {
+	public Department(int id, String name) {
 		Id = id;
 		Name = name;
-	}
-
-	public Integer getId() {
-		return Id;
-	}
-
-	public void setId(Integer id) {
-		Id = id;
 	}
 
 	public String getName() {
@@ -34,12 +26,19 @@ public class Department implements Serializable{
 		Name = name;
 	}
 
+	public int getId() {
+		return Id;
+	}
+
+	public void setId(int id) {
+		Id = id;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((Id == null) ? 0 : Id.hashCode());
-		result = prime * result + ((Name == null) ? 0 : Name.hashCode());
+		result = prime * result + Id;
 		return result;
 	}
 
@@ -52,15 +51,7 @@ public class Department implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Department other = (Department) obj;
-		if (Id == null) {
-			if (other.Id != null)
-				return false;
-		} else if (!Id.equals(other.Id))
-			return false;
-		if (Name == null) {
-			if (other.Name != null)
-				return false;
-		} else if (!Name.equals(other.Name))
+		if (Id != other.Id)
 			return false;
 		return true;
 	}
