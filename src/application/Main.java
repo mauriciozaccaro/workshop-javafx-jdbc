@@ -1,20 +1,29 @@
 package application;
 	
+import java.awt.ScrollPane;
+
 import javafx.application.Application;
-import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 //--module-path C:\jdbc-libs\javafx-sdk\lib --add-modules=javafx.fxml,javafx.controls
 
 public class Main extends Application {
 	@Override
-	public void start(Stage primaryStage) {
+	public void start(Stage primaryStage) { // Stage seria o palco
 		try {
-			BorderPane root = new BorderPane();
-			Scene scene = new Scene(root,400,400);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			primaryStage.setScene(scene);
-			primaryStage.show();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
+			javafx.scene.control.ScrollPane scrollPane = loader.load();
+			
+			scrollPane.setFitToHeight(true);
+			scrollPane.setFitToWidth(true);
+			
+			Scene myScene = new Scene(scrollPane);// Scene seria a cena que será exibida no palco
+			primaryStage.setScene(myScene); // aqui a gente adiciona a cena ao palco
+			primaryStage.setTitle("Sample JavaFX application");
+			primaryStage.show();// aqui deixa o palco visível para verem o espetáculo
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
