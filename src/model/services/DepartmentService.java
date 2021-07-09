@@ -17,4 +17,11 @@ public class DepartmentService {
 	public Integer lastNumberDepartmentId() {
 		return dao.lastNumber();
 	}
+	
+	public void saveOrUpdate(Department obj) { // saveOrUpdate Salve ou Atualize
+		if(obj.getId() == null) {
+			dao.insert(obj);
+		}else {
+			dao.update(obj);		}
+	}
 }

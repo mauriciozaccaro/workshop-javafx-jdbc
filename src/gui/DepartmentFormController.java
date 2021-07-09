@@ -3,18 +3,24 @@ package gui;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import bd.DbException;
+import gui.util.Alerts;
 import gui.util.Constraints;
+import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import model.entities.Department;
+import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
 
 	private Department entity; // entidade relacionada a esse formulário 
+	private DepartmentService service;
 	
 	@FXML
 	private Button btSave;
@@ -36,19 +42,42 @@ public class DepartmentFormController implements Initializable {
 	
 	@FXML 
 	public void onBtSaveAction(ActionEvent event) {
-		System.out.println("Botão Salvar");
+		if(entity == null) {
+			throw new IllegalStateException("Entity was null");
+		}
+		if(service == null) {
+			throw new IllegalStateException("Service was null");
+		}
+		try {
+			entity = getFormData();
+			service.saveOrUpdate(entity);			
+			Utils.currentStage(event).close();
+			Alerts.showAlerts(null, null, "Cadastro salvo com Sucesso!", AlertType.INFORMATION);
+			
+			
+		}catch(DbException db) {
+			Alerts.showAlerts("Erro ao Salvar dados", null, db.getMessage(), AlertType.ERROR);
+		}
+			
 	}
 	
+	private Department getFormData() {
+		
+		Department obj = new Department();
+		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		obj.setName(txtName.getText());
+		
+		return obj;
+	}
+
 	@FXML
 	public void onBtCancelAction(ActionEvent event) {
-		System.out.println("Botão Cancelar");
+		Utils.currentStage(event).close();
 	}
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		
 		initializeNodes();
-		
 	}
 
 	private void initializeNodes() {
@@ -60,11 +89,19 @@ public class DepartmentFormController implements Initializable {
 		this.entity = entity; // injeção de dependência
 	}
 	
+	public void setDepartmentService(DepartmentService service) {
+		this.service = service;
+	}
+	
 	public void updateFormData() {
 		if(entity == null) {
 			throw new IllegalStateException("Entity was null");
 		}
 		txtId.setText(String.valueOf(entity.getId())); // passando para o txtId os dados do Id que vierem do Department instaciado
-		txtName.setText(String.valueOf(entity.getName()));
+		if(entity.getId() == null) {
+			txtName.setText("");
+		}else {
+			txtName.setText(String.valueOf(entity.getName()));
+		}
 	}
 }

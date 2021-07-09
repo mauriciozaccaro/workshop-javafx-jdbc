@@ -54,9 +54,12 @@ public class DepartmentListController implements Initializable{
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
 		Integer newId = depService.lastNumberDepartmentId();
-		Department obj = new Department(newId, "");
+		//Department obj = new Department(newId, "");
+		Department obj = new Department();
 		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage);
+		
 	}	
+	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		initializeNodes();	
@@ -91,6 +94,7 @@ public class DepartmentListController implements Initializable{
 			
 			DepartmentFormController controller = loader.getController();
 			controller.setDepartment(obj);
+			controller.setDepartmentService(new DepartmentService());
 			controller.updateFormData();
 			
 			Stage dialogStage = new Stage();

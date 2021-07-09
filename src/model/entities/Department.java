@@ -13,7 +13,7 @@ public class Department implements Serializable {
 		
 	}
 
-	public Department(int Id, String Name) {
+	public Department(Integer Id, String Name) {
 		this.Id = Id;
 		this.Name = Name;
 	}
@@ -26,11 +26,11 @@ public class Department implements Serializable {
 		Name = name;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return Id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		Id = id;
 	}
 

@@ -251,7 +251,5 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 			DB.closeStatement(st);
 		}
 		return null;
-	}
-
-	
+	}	
 }

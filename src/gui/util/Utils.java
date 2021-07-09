@@ -12,4 +12,15 @@ public class Utils {
 		o getScene().getWindow()  que é para pegar tela da cena. Como esse getWindow é uma SUPER classe do Stage, a gente faz um 
 		novo DownCast para o tipo "Stage" */
 	}
+	
+	public static Integer tryParseToInt(String str) {
+		/* Esse método é para tratar o que vem láaaaa da TextField do Id, para que ele converta 
+		 * o texto (String) do TextField para um numero Inteiro. E, caso não seja possível fazer tal 
+		 * conversão, vai return null */
+		try {
+			return Integer.parseInt(str);
+		}catch(NumberFormatException e ) {
+			return null;
+		}
+	}
 }
