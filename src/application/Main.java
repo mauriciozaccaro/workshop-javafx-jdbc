@@ -1,10 +1,7 @@
 package application;
 	
-import java.awt.ScrollPane;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 //--module-path C:\jdbc-libs\javafx-sdk\lib --add-modules=javafx.fxml,javafx.controls
