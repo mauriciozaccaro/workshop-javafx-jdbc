@@ -1,18 +1,27 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.util.Alerts;
+import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
@@ -40,8 +49,9 @@ public class DepartmentListController implements Initializable{
 	private Button btNew;
 	
 	@FXML
-	public void onBtNewAction() {
-		System.out.println("onBtNewAction()");
+	public void onBtNewAction(ActionEvent event) {
+		Stage parentStage = Utils.currentStage(event);
+		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
 	}	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
@@ -58,7 +68,6 @@ public class DepartmentListController implements Initializable{
 		tableViewDepartment.prefHeightProperty().bind(stage.heightProperty());
 	}
 	
-
 	public void updateTableView() {
 		if(depService == null) {
 			throw new IllegalStateException("Serviço está NULO");
@@ -70,5 +79,26 @@ public class DepartmentListController implements Initializable{
 		tableViewDepartment.setItems(obsList); 
 	}
 	
+	private void createDialogForm(String absoluteName, Stage parantStage) {
+		try {
+			
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load();
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Enter Department Data");
+			dialogStage.setScene(new Scene(pane));
+			dialogStage.setResizable(false);
+			dialogStage.initOwner(parantStage); // esse "initOwner" é para dizer quem é o PAI da janela/palco, que no caso vem 
+			// lá dos parametros passados no como Stage na criação do método
+			dialogStage.initModality(Modality.WINDOW_MODAL); // isso é para "travar" a janela acima da janela de fundo..ou seja, 
+			// não terá como mexer na janela de fundo se essa janela estiver aberta na frente..
+			dialogStage.showAndWait(); // porque ShowAndWait e não Show? não sei!
+			
+			
+		}catch(IOException e) {
+			Alerts.showAlerts("IOException", "Error Loanding View", e.getMessage(), AlertType.ERROR);
+		}
+	}
 
 }
