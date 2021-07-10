@@ -128,12 +128,9 @@ public class SellerListController implements Initializable, DataChangeListener {
 												 * carrega os departamentos do banco de dados no para o controller que
 												 * serão mostrados no ComboBoxDepartment
 												 */
-
-			controller
-					.subscribeDataChangeListener(this); /*
+			controller.subscribeDataChangeListener(this); /*
 														 * aqui estamos INSCREVENDO esse método no DataChangeListener
 														 */
-
 			controller.updateFormData();
 
 			Stage dialogStage = new Stage();
@@ -150,6 +147,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 			dialogStage.showAndWait(); // porque ShowAndWait e não Show? não sei!
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			Alerts.showAlerts("IOException", "Error Loanding View", e.getMessage(), AlertType.ERROR);
 		}
 	}
@@ -192,16 +190,13 @@ public class SellerListController implements Initializable, DataChangeListener {
 
 			protected void updateItem(Seller obj, boolean empty) {
 				super.updateItem(obj, empty);
-
 				if (obj == null) {
 					setGraphic(null);
 					return;
 				}
-
 				setGraphic(button);
 				button.setOnAction(event -> removeEntity(obj));
 			}
-
 		});
 	}
 
