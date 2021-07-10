@@ -3,11 +3,11 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
-import com.mysql.cj.x.protobuf.MysqlxNotice.SessionStateChanged.Parameter;
-
 import application.Main;
+import bd.DbIntegrityException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
@@ -21,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -28,7 +29,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.dao.impl.DepartmentDaoJDBC;
 import model.entities.Department;
 import model.services.DepartmentService;
 
@@ -56,6 +56,9 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private TableColumn<Department, Department> tableColumnEdit;
 	
 	@FXML
+	private TableColumn<Department, Department> tableColumnREMOVE;
+	
+	@FXML
 	private Button btNew;
 	
 	@FXML
@@ -65,7 +68,6 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		//Department obj = new Department(newId, "");
 		Department obj = new Department();
 		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage);
-		
 	}	
 	
 	@Override
@@ -90,7 +92,8 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		List<Department> list = depService.findAll();
 		obsList = FXCollections.observableArrayList(list);
 		tableViewDepartment.setItems(obsList); 
-		initEditButtons(); // acrescenta um novo Button "Edit" em cada linha da tabela view
+		initEditButtons();// acrescenta um novo Button "Edit" em cada linha da tabela view
+		initRemoveButtons();// acrescenta um novo Button "Remove" em cada linha da tabela view
 	}
 	
 	private void createDialogForm(Department obj, String absoluteName, Stage parantStage) {
@@ -102,7 +105,6 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			DepartmentFormController controller = loader.getController();
 			controller.setDepartment(obj);
 			controller.setDepartmentService(new DepartmentService());
-			
 			controller.subscribeDataChangeListener(this); /* aqui estamos INSCREVENDO esse método
 			no DataChangeListener */
 			
@@ -150,4 +152,43 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			
 		});
 	}
+	
+	private void initRemoveButtons() { /* Classe móh dahora... rsrsr .. ela CRIA um Button "Edit" 
+		dentro de cada linha da TableView e passa o Department selecionado para a tela DepartmentForm */
+			tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+			tableColumnREMOVE.setCellFactory(param -> new TableCell<Department, Department>(){
+				private final Button button = new Button("Remove");
+				
+				protected void updateItem(Department obj, boolean empty) {
+					super.updateItem(obj, empty);
+					
+					if(obj == null) {
+						setGraphic(null);
+						return;
+					}
+					
+					setGraphic(button);
+					button.setOnAction(event -> removeEntity(obj));
+				}
+				
+			});
+		}
+
+	private void removeEntity(Department obj) {
+		
+		Optional<ButtonType> result = Alerts.showConfirmation("Confirmation", "Are you sure to delete?");
+		
+		if(result.get() == ButtonType.OK) {
+			if(depService == null) {
+				throw new IllegalStateException("Service was null");
+			}
+			try {
+				depService.remove(obj);
+				updateTableView();
+			}catch(DbIntegrityException e){
+				Alerts.showAlerts("Error removing Object", null, e.getMessage(), AlertType.ERROR);
+			}
+		}
+	}
 }
+ 

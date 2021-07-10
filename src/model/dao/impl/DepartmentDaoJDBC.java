@@ -9,6 +9,7 @@ import java.util.List;
 
 import bd.DB;
 import bd.DbException;
+import bd.DbIntegrityException;
 import model.dao.DaoFactory;
 import model.dao.DepartmentDao;
 import model.entities.Department;
@@ -73,24 +74,25 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 
 	@Override
 	public void deleteById(Integer id) {
-		DepartmentDao departmentDao = DaoFactory.createDepartmentDao();
+		//DepartmentDao departmentDao = DaoFactory.createDepartmentDao();
 		
 		PreparedStatement st = null;
-		PreparedStatement ss = null;
+		//PreparedStatement ss = null;
 		try {
 			st = conn.prepareStatement("DELETE FROM Department WHERE Department.Id = ?");
 			st.setInt(1, id);
 			
-			 Department dap = departmentDao.findById(id);
+			// Department dap = departmentDao.findById(id);
 			
-			int rowsDeleted = st.executeUpdate();
-			if(rowsDeleted > 0) {
+			//int rowsDeleted = st.executeUpdate();
+			st.executeUpdate();
+			/*if(rowsDeleted > 0) {
 				System.out.println("\n " + dap + "\n" + rowsDeleted + " registro(s) deletado(s)!");
 			}else {
 				throw new DbException("Erro Inesperado! Nenhum registro Deletado");
-			}
+			}*/
 		}catch (SQLException e) {
-			System.out.println("Erro ao Buscar Departamento: " + e.getMessage());
+			throw new DbIntegrityException(e.getMessage());
 		} finally {
 			DB.closeStatement(st);
 		}
