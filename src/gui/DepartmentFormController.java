@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import bd.DbException;
 import gui.listeners.DataChangeListener;
@@ -18,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
+import model.exceptions.ValidationExceptions;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
@@ -67,7 +70,10 @@ public class DepartmentFormController implements Initializable {
 			Alerts.showAlerts(null, null, "Cadastro salvo com Sucesso!", AlertType.INFORMATION);
 			
 			
-		}catch(DbException db) {
+		}catch(ValidationExceptions ve) {
+			setErrorMessages(ve.getErrors()); // traz a coleção de erros do Ma<>
+		}
+		catch(DbException db) {
 			Alerts.showAlerts("Erro ao Salvar dados", null, db.getMessage(), AlertType.ERROR);
 		}
 			
@@ -80,14 +86,32 @@ public class DepartmentFormController implements Initializable {
 	}
 
 	private Department getFormData() {
-		
 		Department obj = new Department();
-		obj.setId(Utils.tryParseToInt(txtId.getText()));
-		obj.setName(txtName.getText());
 		
+		ValidationExceptions exceptions = new ValidationExceptions("Validation Error");
+		
+		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		
+		if(txtName.getText() == null || txtName.getText().trim().equals("")) {
+			exceptions.addError("name", "Field can't be empty"); // adicionando uma exceção caso exista
+		}
+		
+		obj.setName(txtName.getText());
+		if(exceptions.getErrors().size() > 0) { // se tiver pelo menos 1 erro
+			throw exceptions; // retorna a exceção
+		}
 		return obj;
 	}
 
+	private void setErrorMessages(Map<String, String> errors) {
+		Set<String> fields = errors.keySet();
+		
+		if(fields.contains("name")) {
+			Alerts.showAlerts(null, null, errors.get("name"), AlertType.ERROR);
+			lblNameError.setText(errors.get("name"));
+		}
+	}
+	
 	@FXML
 	public void onBtCancelAction(ActionEvent event) {
 		Utils.currentStage(event).close();
