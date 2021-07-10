@@ -40,6 +40,22 @@ public class Utils {
 		}
 	}
 
+
+	public static Double tryParseToDouble(String str) {
+		/*
+		 * Esse método é para tratar o que vem láaaaa da TextField do BaseSalary, para que ele
+		 * converta o texto (String) do TextField para um numero Double. E, caso não
+		 * seja possível fazer tal conversão, vai return null
+		 */
+		try {
+			return Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+
+	
 	public static <T> void formatTableColumnDate(TableColumn<T, Date> tableColumn, String format) {
 		tableColumn.setCellFactory(column -> {
 			TableCell<T, Date> cell = new TableCell<T, Date>() {

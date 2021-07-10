@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -128,14 +130,32 @@ public class SellerFormController implements Initializable {
 		Seller obj = new Seller();
 		
 		ValidationExceptions exceptions = new ValidationExceptions("Validation Error");
-		
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		
+		if(txtBaseSalary.getText() == null || txtBaseSalary.getText().trim().equals("")) {
+			exceptions.addError("baseSalary", "Field can't be empty"); // adicionando uma exceção caso exista
+		}
+		obj.setBaseSalary(Utils.tryParseToDouble(txtBaseSalary.getText()));
 		
 		if(txtName.getText() == null || txtName.getText().trim().equals("")) {
 			exceptions.addError("name", "Field can't be empty"); // adicionando uma exceção caso exista
 		}
-		
 		obj.setName(txtName.getText());
+		
+		if(txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
+			exceptions.addError("email", "Field can't be empty"); // adicionando uma exceção caso exista
+		}
+		obj.setEmail(txtEmail.getText());
+		
+		if(dpBirthDate.getValue() == null || dpBirthDate.getValue().toString().trim().equals("")) {
+			exceptions.addError("baseSalary", "Field can't be empty"); // adicionando uma exceção caso exista
+		}
+		Instant instant = Instant.from(dpBirthDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+		// codigo acima pega o valor do DatePicker
+		obj.setBirthDate(Date.from(instant));
+	
+		obj.setDepartment(comboBoxDepartment.getValue());
+		
 		if(exceptions.getErrors().size() > 0) { // se tiver pelo menos 1 erro
 			throw exceptions; // retorna a exceção
 		}
@@ -146,9 +166,25 @@ public class SellerFormController implements Initializable {
 		Set<String> fields = errors.keySet();
 		
 		if(fields.contains("name")) {
-			Alerts.showAlerts(null, null, errors.get("name"), AlertType.ERROR);
-			lblNameError.setText(errors.get("name"));
+			Alerts.showAlerts(null, fields.getClass().getName(), errors.get("name"), AlertType.ERROR);
+			lblNameError.setText(errors.get("name") + "-" + errors.get("email"));
 		}
+		
+		if(fields.contains("email")) {
+			Alerts.showAlerts(null, null, errors.get("email"), AlertType.ERROR);
+			lblNameError.setText(errors.get("email"));
+		}
+		
+		if(fields.contains("baseSalary")) {
+			Alerts.showAlerts(null, null, errors.get("baseSalary"), AlertType.ERROR);
+			lblNameError.setText(errors.get("baseSalary"));
+		}
+
+		if(fields.contains("birthDate")) {
+			Alerts.showAlerts(null, null, errors.get("birthDate"), AlertType.ERROR);
+			lblNameError.setText(errors.get("birthDate"));
+		}
+		
 	}
 	
 	@FXML
@@ -190,7 +226,8 @@ public class SellerFormController implements Initializable {
 			txtName.setText("");
 			txtEmail.setText("");
 			txtBaseSalary.setText("");
-			
+			Instant instant = Instant.now();
+			dpBirthDate.setValue(LocalDate.now());
 			comboBoxDepartment.getSelectionModel().selectFirst();
 		}else {
 			txtName.setText(entity.getName());
