@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -24,6 +27,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
 import model.services.SellerService;
@@ -107,33 +112,33 @@ public class SellerListController implements Initializable, DataChangeListener{
 	}
 	
 	private void createDialogForm(Seller obj, String absoluteName, Stage parantStage) {
-//		try {
-//			
-//			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-//			Pane pane = loader.load();
-//			
-//			SellerFormController controller = loader.getController();
-//			controller.setSeller(obj);
-//			controller.setSellerService(new SellerService());
-//			controller.subscribeDataChangeListener(this); /* aqui estamos INSCREVENDO esse método
-//			no DataChangeListener */
-//			
-//			controller.updateFormData();
-//			
-//			Stage dialogStage = new Stage();
-//			dialogStage.setTitle("Enter Seller Data");
-//			dialogStage.setScene(new Scene(pane));
-//			dialogStage.setResizable(false);
-//			dialogStage.initOwner(parantStage); // esse "initOwner" é para dizer quem é o PAI da janela/palco, que no caso vem 
-//			// lá dos parametros passados no como Stage na criação do método
-//			dialogStage.initModality(Modality.WINDOW_MODAL); // isso é para "travar" a janela acima da janela de fundo..ou seja, 
-//			// não terá como mexer na janela de fundo se essa janela estiver aberta na frente..
-//			dialogStage.showAndWait(); // porque ShowAndWait e não Show? não sei!
-//			
-//			
-//		}catch(IOException e) {
-//			Alerts.showAlerts("IOException", "Error Loanding View", e.getMessage(), AlertType.ERROR);
-//		}
+		try {
+			
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load();
+			
+			SellerFormController controller = loader.getController();
+			controller.setSeller(obj);
+			controller.setSellerService(new SellerService());
+			controller.subscribeDataChangeListener(this); /* aqui estamos INSCREVENDO esse método
+			no DataChangeListener */
+			
+			controller.updateFormData();
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Enter Seller Data");
+			dialogStage.setScene(new Scene(pane));
+			dialogStage.setResizable(false);
+			dialogStage.initOwner(parantStage); // esse "initOwner" é para dizer quem é o PAI da janela/palco, que no caso vem 
+			// lá dos parametros passados no como Stage na criação do método
+			dialogStage.initModality(Modality.WINDOW_MODAL); // isso é para "travar" a janela acima da janela de fundo..ou seja, 
+			// não terá como mexer na janela de fundo se essa janela estiver aberta na frente..
+			dialogStage.showAndWait(); // porque ShowAndWait e não Show? não sei!
+			
+			
+		}catch(IOException e) {
+			Alerts.showAlerts("IOException", "Error Loanding View", e.getMessage(), AlertType.ERROR);
+		}
 	}
 
 	@Override
